@@ -1,16 +1,14 @@
-export interface Deck {
-    name: string,
-    whiteCardCount: number,
-    blackCardCount: number,
-    whiteCards: [Card],
-    blackCards: [Card]
+export interface Response {
+    message: string,
+    responseObj: Card | CardPack
 }
 
 export interface Card {
-    id: number,
+    cardId: number,
     body: string
 }
 
-export interface Meta {
-    count: number
+export interface CardPack {
+    whiteCardCount: number,
+    blackCardCount: number
 }

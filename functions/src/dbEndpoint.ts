@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import {Card, Response} from "./dbInterface";
 
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
@@ -46,7 +47,7 @@ export const getPack = functions.https.onRequest((request, response) => {
                     response.status(200).send({
                         message: 'Successfully returned ' + requestedCardPack,
                         responseObj: {whiteCardCount: whiteCardCount, blackCardCount: blackCardCount}
-                    });
+                    } as Response);
                     return
                 }).catch(() => {
                     response.status(500).send("failed to fetch white card deck");
@@ -88,8 +89,10 @@ export const getWhiteCard = functions.https.onRequest((request, response) => {
     }).then((success) => {
         if (success) {
             marmosadCards.doc(requestedCardPack).collection('white-cards').doc(requestedCardId).get().then((doc => {
-                response.status(200).send({message: 'Successfully returned white card from ' + requestedCardPack,
-                    responseObj: {cardId: doc.data().cardId, body: doc.data().body}});
+                response.status(200).send({
+                    message: 'Successfully returned white card from ' + requestedCardPack,
+                    responseObj: {cardId: doc.data().cardId, body: doc.data().body} as Card
+                } as Response);
             })).catch(reason => {
                 response.status(400).send('requested card does not exist');
             })
@@ -127,8 +130,10 @@ export const getBlackCard = functions.https.onRequest((request, response) => {
     }).then((success) => {
         if (success) {
             marmosadCards.doc(requestedCardPack).collection('black-cards').doc(requestedCardId).get().then((doc => {
-                response.status(200).send({message: 'Successfully returned black card from' + requestedCardPack,
-                    responseObj: {cardId: doc.data().cardId, body: doc.data().body}});
+                response.status(200).send({
+                    message: 'Successfully returned black card from' + requestedCardPack,
+                    responseObj: {cardId: doc.data().cardId, body: doc.data().body} as Card
+                } as Response);
             })).catch(reason => {
                 response.status(400).send('requested card does not exist');
             })
@@ -136,5 +141,6 @@ export const getBlackCard = functions.https.onRequest((request, response) => {
         return
     }).catch(() => {
         response.status(500).send('card pack validation failed');
-    });;
+    });
+    ;
 });
